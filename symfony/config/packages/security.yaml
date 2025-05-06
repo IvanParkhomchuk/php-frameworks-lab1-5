@@ -9,6 +9,10 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+            api:
+                pattern: ^/api
+                stateless: true
+                jwt: ~
         main:
             lazy: true
             provider: users_in_memory
@@ -22,8 +26,11 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/(products|authors|books|categories|readers|loans), roles: [ROLE_CLIENT, ROLE_MANAGER, ROLE_ADMIN], methods: [GET] }
+        - { path: ^/api/(products|authors|books|categories|readers|loans), roles: [ROLE_MANAGER, ROLE_ADMIN], methods: [POST, PUT, DELETE] }
+        - { path: ^/api/admin, roles: [ROLE_ADMIN] }
 
 when@test:
     security:
